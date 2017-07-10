@@ -18,6 +18,10 @@ public class Brain : MonoBehaviour
 
     }
 
+	public virtual void Start()
+	{
+		
+	}
 
     public void MoveInDirection(Vector3 Direction)
     {
