@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerBrain : Brain
 {
-	const float ChunkOptimizerTime = 5;
+	const float ChunkOptimizerTime = 10;
 
 	public override void Tick()
 	{
+		base.Tick();
+
 		ReadPlayerInput();
 	}
 
@@ -23,24 +26,27 @@ public class PlayerBrain : Brain
 	{
 		if (Input.GetMouseButton(0))
 		{
+			if (EventSystem.current.IsPointerOverGameObject())
+				return;
+
 			var MousePositionInWorld = Input.mousePosition;
 			MousePositionInWorld.z = 0;
 			MousePositionInWorld = Camera.main.ScreenToWorldPoint(MousePositionInWorld);
 
-			Vector3 myPos = transform.position;
-			myPos.z = 0;
+			SetMovementTarget(MousePositionInWorld);
 
-			Vector3 MovementDir = (MousePositionInWorld - myPos).normalized;
-			MovementDir *= character.stats.Speed;
-
-			MoveInDirection(MovementDir);
-		}
-		else if (Input.GetMouseButtonUp(0))
-		{
-			Stop();
+			//OLD
+			//Vector3 myPos = transform.position;
+			//myPos.z = 0;
+			//
+			//Vector3 MovementDir = (MousePositionInWorld - myPos).normalized;
+			//MovementDir *= character.stats.Speed;
+			//
+			//MoveInDirection(MovementDir);
 		}
 
 	}
+
 
 	public override void Start()
 	{
@@ -64,9 +70,6 @@ public class PlayerBrain : Brain
 		int.TryParse(coords[0], out cX);
 		int cY = -1;
 		int.TryParse(coords[1], out cY);
-
-
-		//Debug.Log("I am in chunk " + cX + "," + cY);
 
 
 		List<string> ChunksToKeep = new List<string>();

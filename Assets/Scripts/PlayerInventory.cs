@@ -55,5 +55,14 @@ public class PlayerInventory : MonoBehaviour
 	}
 
 
+	public List<GameItem> Items
+	{
+		get
+		{
+			return Slots.ConvertAll(x => x.AssociatedItem).ToList();
+		}
+	}
+
+
 
 }

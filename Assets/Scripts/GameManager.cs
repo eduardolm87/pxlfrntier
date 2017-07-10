@@ -26,8 +26,9 @@ public class GameManager : MonoBehaviour
 
 	public ScenarioGenerator ScenarioGenerator;
 
-
 	public PlayerInventory PlayerInventory;
+
+	public HUDController HUD;
 
 	[HideInInspector]
 	public Character Player;
@@ -47,19 +48,14 @@ public class GameManager : MonoBehaviour
 
 	void Cheats()
 	{
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			Reset();
+		}
+
 		if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
 			PlayerInventory.AddToInventory("Candle");
-		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			StartGame();
-		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha2))
-		{
-			Reset();
 		}
 	}
 

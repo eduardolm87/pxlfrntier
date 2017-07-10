@@ -29,8 +29,10 @@ public class Character : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (brain != null)
-            brain.Tick();
+		if (brain != null)
+		{
+			brain.Tick();
+		}
     }
 
 
