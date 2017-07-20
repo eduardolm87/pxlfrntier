@@ -11,16 +11,70 @@ public class PlayerBrain : Brain
 	{
 		base.Tick();
 
-		ReadPlayerInput();
+		//ReadPlayerInput();
+
+		RayCastMouse();
 	}
+
+
+	void RayCastMouse()
+	{
+		if (!Input.GetMouseButtonDown(0))
+			return;
+		
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		Physics.Raycast(ray, out hit);
+
+		if (hit.collider != null)
+		{
+			if (hit.collider.transform.root.GetInstanceID() == GameManager.Instance.ScenarioGenerator.ScenarioParent.GetInstanceID())
+			{
+				TouchingObjectInBoard(hit.collider.gameObject);
+			}
+		}
+	}
+
+
+	void TouchingObjectInBoard(GameObject target)
+	{
+		if (target.tag == "tile")
+		{
+			TouchTile(target);
+		}
+		else
+		{
+			Character character = target.GetComponent<Character>();
+			if (character != null)
+			{
+				TouchCharacter(character);
+			}
+			else
+			{
+				Debug.Log("WhAT");
+			}
+
+		}
+	}
+
+	void TouchTile(GameObject target)
+	{
+		Debug.Log("touched tile " + target.name);	
+		GameManager.Instance.ScenarioGenerator.HighlightOnlyOneTile(target, Color.yellow);
+	}
+
+	void TouchCharacter(Character target)
+	{
+		Debug.Log("touched charactera " + target.name);
+	}
+
 
 
 	void ReadPlayerInput()
 	{
 		ReadMouse();
 	}
-
-	
 
 	void ReadMouse()
 	{
@@ -34,15 +88,6 @@ public class PlayerBrain : Brain
 			MousePositionInWorld = Camera.main.ScreenToWorldPoint(MousePositionInWorld);
 
 			SetMovementTarget(MousePositionInWorld);
-
-			//OLD
-			//Vector3 myPos = transform.position;
-			//myPos.z = 0;
-			//
-			//Vector3 MovementDir = (MousePositionInWorld - myPos).normalized;
-			//MovementDir *= character.stats.Speed;
-			//
-			//MoveInDirection(MovementDir);
 		}
 
 	}

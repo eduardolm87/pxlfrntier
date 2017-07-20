@@ -26,6 +26,8 @@ public class ScenarioGenerator : MonoBehaviour
 	public float TerrainZ = 1;
 	public float ElementsZ = 0;
 	public float SizeOfTile = 1.25f;
+	public Vector3 LevelRotation = Vector3.zero;
+	public Vector3 LevelPosition = Vector3.zero;
 
 	//Prefab references
 	public List<RandomTile> Tiles = new List<RandomTile>();
@@ -43,7 +45,7 @@ public class ScenarioGenerator : MonoBehaviour
 	float ChunkOffsetX = 0;
 	float ChunkOffsetY = 0;
 
-	Transform ScenarioParent;
+	public Transform ScenarioParent;
 	Transform ChunkParent;
 	Transform Chunk_TerrainParent;
 	Transform Chunk_ElementsParent;
@@ -77,6 +79,17 @@ public class ScenarioGenerator : MonoBehaviour
 		}
 			
 		yield return new WaitForEndOfFrame();
+
+		GlobalPostCalculations();
+
+		yield return new WaitForEndOfFrame();
+
+	
+	}
+
+	void GlobalPostCalculations()
+	{
+		ScenarioParent.transform.rotation = Quaternion.Euler(LevelRotation);
 	}
 
 	void ChunkGenerate()
@@ -110,8 +123,9 @@ public class ScenarioGenerator : MonoBehaviour
 		GameObject scenarioParent = new GameObject();
 		scenarioParent.name = "Scenario";
 		scenarioParent.transform.SetParent(null);
-		scenarioParent.transform.position = Vector3.zero;
+		scenarioParent.transform.position = LevelPosition;
 		ScenarioParent = scenarioParent.transform;
+
 
 		Chunks.Clear();
 	}
@@ -161,7 +175,11 @@ public class ScenarioGenerator : MonoBehaviour
 		SpriteRenderer newTileRenderer = newTile.AddComponent<SpriteRenderer>();
 		newTileRenderer.sprite = spriteToUse;
 
+		Collider newTileCollider = newTile.AddComponent<BoxCollider>();
+
 		newTile.transform.SetParent(Chunk_TerrainParent, false);
+
+		newTile.tag = "tile";
 
 		Vector3 tilePosition = new Vector3(SizeOfTile * x, SizeOfTile * y, TerrainZ);
 		tilePosition.x += ChunkOffsetX;
@@ -230,6 +248,7 @@ public class ScenarioGenerator : MonoBehaviour
 	public void DestroyScenario()
 	{
 		Chunks.Clear();
+		TilesAffected.Clear();
 
 		Destroy(ScenarioParent.gameObject);
 	}
@@ -258,5 +277,42 @@ public class ScenarioGenerator : MonoBehaviour
 			c.SetActive(Exceptions.Contains(c.name));
 
 		});
+	}
+
+
+
+
+	List<GameObject> TilesAffected = new List<GameObject>();
+
+
+	public void HighlightTile(GameObject tile, Color color)
+	{
+		var outline = tile.AddComponent<cakeslice.Outline>();
+		outline.color = 1;
+		GameManager.Instance.Camera.OutlineEffect.lineColor0 = color;
+		TilesAffected.Add(tile);
+	}
+
+	public void HighlightOnlyOneTile(GameObject tile, Color color)
+	{
+		ClearAllHighlightedTiles();
+		HighlightTile(tile, color);
+	}
+
+	public void ClearTile(GameObject tile)
+	{
+		var outline = tile.GetComponent<cakeslice.Outline>();
+		Destroy(outline);
+	}
+
+	public void ClearAllHighlightedTiles()
+	{
+		TilesAffected.ForEach(t =>
+		{
+			var o = t.GetComponent<cakeslice.Outline>();
+			Destroy(o);
+		});
+
+		TilesAffected.Clear();
 	}
 }

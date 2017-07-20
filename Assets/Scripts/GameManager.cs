@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
 
 	public HUDController HUD;
 
+	public GameCamera Camera;
+
 	[HideInInspector]
 	public Character Player;
 
@@ -110,5 +112,7 @@ public class GameManager : MonoBehaviour
 		Player = InstantiateCharacter("cowgirl"); //todo: default
 		Player.brain = Player.gameObject.AddComponent<PlayerBrain>();
 		Player.IsPlayer = true;
+
+		Player.transform.position = Vector3.zero;
 	}
 }

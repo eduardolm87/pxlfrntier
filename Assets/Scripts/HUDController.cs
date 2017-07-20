@@ -13,6 +13,12 @@ public class HUDController : MonoBehaviour
 	List<GameObject> InventoryItemOptionsMenuButtons = new List<GameObject>();
 
 
+	public HudStatBar HealthBar;
+	public HudStatBar HungerBar;
+	public HudStatBarWeapon WeaponBar;
+	public Text GoldBar;
+
+
 	public void OpenInventoryOptionsOverItem(InventoryItem slot)
 	{
 		InventoryItemOptionsMenu.transform.position = slot.transform.position;
