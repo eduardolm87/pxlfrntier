@@ -9,6 +9,7 @@ public class ScenarioGenerator : MonoBehaviour
 	public class RandomTile
 	{
 		public Sprite sprite = null;
+		public string Name = "";
 		public int ids = 0;
 	}
 
@@ -314,5 +315,16 @@ public class ScenarioGenerator : MonoBehaviour
 		});
 
 		TilesAffected.Clear();
+	}
+
+
+	public RandomTile GetTileInfoFromGameObject(GameObject tile)
+	{
+		SpriteRenderer spr = tile.GetComponent<SpriteRenderer>();
+		if (spr == null)
+			return null;
+
+		RandomTile tileInfo = Tiles.FirstOrDefault(t => t.sprite == spr.sprite);
+		return tileInfo;
 	}
 }

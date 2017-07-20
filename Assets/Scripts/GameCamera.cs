@@ -9,6 +9,9 @@ public class GameCamera : MonoBehaviour
 
 	public cakeslice.OutlineEffect OutlineEffect;
 
+	[HideInInspector]
+	public Transform target = null;
+
 	void Start()
 	{
 		PosOffset = transform.localPosition;
@@ -17,17 +20,28 @@ public class GameCamera : MonoBehaviour
 
 	void Update()
 	{
-		if (GameManager.Instance.Player == null)
-			return;
+		Vector3 currentPos = transform.position;
+		Quaternion currentRot = transform.rotation;
 
-		//transform.position = new Vector3(GameManager.Instance.Player.transform.position.x, GameManager.Instance.Player.transform.position.y, transform.position.z);
+		if (target != null)
+		{
+			transform.position = target.transform.position;
+		}
+		else if (GameManager.Instance.Player != null)
+		{
+			transform.position = GameManager.Instance.Player.transform.position;
+		}
 
-
-		transform.position = GameManager.Instance.Player.transform.position;
 		transform.position += PosOffset;
 		transform.rotation = transform.localRotation;
 
+		Vector3 desiredPos = transform.position;
+		Quaternion desiredRot = transform.rotation;
 
+		transform.position = Vector3.Lerp(currentPos, desiredPos, Time.deltaTime);
+		transform.rotation = Quaternion.Lerp(currentRot, desiredRot, Time.deltaTime);
 
 	}
+
+
 }

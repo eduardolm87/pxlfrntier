@@ -6,13 +6,18 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
+	//Other
 	public Text FloatingText;
+
+	//Inventory
 	public GameObject InventoryItemOptionsMenu;
 	public GameObject InventoryItemOptionsButton;
-
 	List<GameObject> InventoryItemOptionsMenuButtons = new List<GameObject>();
 
+	//Infopanel
+	public Infopanel Infopanel;
 
+	//Header
 	public HudStatBar HealthBar;
 	public HudStatBar HungerBar;
 	public HudStatBarWeapon WeaponBar;

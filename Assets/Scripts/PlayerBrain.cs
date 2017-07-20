@@ -21,6 +21,8 @@ public class PlayerBrain : Brain
 	{
 		if (!Input.GetMouseButtonDown(0))
 			return;
+
+		GameManager.Instance.HUD.Infopanel.Hide();
 		
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -29,44 +31,31 @@ public class PlayerBrain : Brain
 
 		if (hit.collider != null)
 		{
-			if (hit.collider.transform.root.GetInstanceID() == GameManager.Instance.ScenarioGenerator.ScenarioParent.GetInstanceID())
-			{
-				TouchingObjectInBoard(hit.collider.gameObject);
-			}
-		}
-	}
-
-
-	void TouchingObjectInBoard(GameObject target)
-	{
-		if (target.tag == "tile")
-		{
-			TouchTile(target);
-		}
-		else
-		{
-			Character character = target.GetComponent<Character>();
+			Character character = hit.collider.GetComponent<Character>();
 			if (character != null)
 			{
 				TouchCharacter(character);
 			}
-			else
+			else if (hit.collider.tag == "tile")
 			{
-				Debug.Log("WhAT");
+				TouchTile(hit.collider.gameObject);
 			}
-
 		}
 	}
 
 	void TouchTile(GameObject target)
 	{
-		Debug.Log("touched tile " + target.name);	
+		//Debug.Log("touched tile " + target.name);	
 		GameManager.Instance.ScenarioGenerator.HighlightOnlyOneTile(target, Color.yellow);
+
+		GameManager.Instance.Camera.target = target.transform;
+
+		GameManager.Instance.HUD.Infopanel.ShowInfoFromTile(target);
 	}
 
 	void TouchCharacter(Character target)
 	{
-		Debug.Log("touched charactera " + target.name);
+		Debug.Log("touched character " + target.name);
 	}
 
 
